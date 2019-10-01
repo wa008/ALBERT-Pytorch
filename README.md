@@ -4,6 +4,8 @@ Simply implementation of [ALBERT(A LITE BERT FOR SELF-SUPERVISED LEARNING OF LAN
 
 Please make sure that I haven't checked the performance yet(i.e Fine-Tuning), only see SOP(sentence-order prediction) and MLM(Masked Langauge model with n-gram) loss falling.
 
+- You can see [my implementation of differnt between Original BERT and ALBERT](https://github.com/graykode/ALBERT-Pytorch/commit/757fd6d5de5407f47eb44a6c5c96a3ab203f98d4)
+
 **CAUTION** Fine-Tuning Tasks not yet!
 
 
