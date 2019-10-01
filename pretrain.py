@@ -245,15 +245,15 @@ def main(args):
         logits_lm, logits_clsf = model(input_ids, segment_ids, input_mask, masked_pos)
         loss_lm = criterion1(logits_lm.transpose(1, 2), masked_ids) # for masked LM
         loss_lm = (loss_lm*masked_weights.float()).mean()
-        loss_clsf = criterion2(logits_clsf, is_next) # for sentence classification
+        loss_sop = criterion2(logits_clsf, is_next) # for sentence classification
         writer.add_scalars('data/scalar_group',
                            {'loss_lm': loss_lm.item(),
-                            'loss_clsf': loss_clsf.item(),
-                            'loss_total': (loss_lm + loss_clsf).item(),
+                            'loss_sop': loss_sop.item(),
+                            'loss_total': (loss_lm + loss_sop).item(),
                             'lr': optimizer.get_lr()[0],
                            },
                            global_step)
-        return loss_lm + loss_clsf
+        return loss_lm + loss_sop
 
     trainer.train(get_loss, model_file=None, data_parallel=True)
 
@@ -266,7 +266,7 @@ if __name__ == '__main__':
     parser.add_argument('--model_cfg', type=str, default='./config/albert_unittest.json')
 
     # official google-reacher/bert is use 20, but 20/512(=seq_len)*100 make only 3% Mask
-    # So, official XLNET zihangdai/xlnet use 85 with name of num_predict(SAME HERE!)
+    # So, using 76(=0.15*512) as `max_pred`
     parser.add_argument('--max_pred', type=int, default=76, help='max tokens of prediction')
     parser.add_argument('--mask_prob', type=float, default=0.15, help='masking probability')
 
