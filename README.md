@@ -61,25 +61,27 @@ $ tensorboard --logdir log --bind_all # expose port
 ## Introduce Keywords in ALBERT with code.
 
 1. [**SOP(sentence-order prediction) loss**](https://github.com/graykode/ALBERT-Pytorch/blob/master/pretrain.py#L78) : In Original BERT, creating  is-not-next(negative) two sentences with randomly picking, however ALBERT use negative examples the same two consecutive segments but with their order swapped.
-  ```python
-     is_next = rand() < 0.5 # whether token_b is next to token_a or not
 
-     tokens_a = self.read_tokens(self.f_pos, len_tokens, True)
-     seek_random_offset(self.f_neg)
-     #f_next = self.f_pos if is_next else self.f_neg
-     f_next = self.f_pos # `f_next` should be next point
-     tokens_b = self.read_tokens(f_next, len_tokens, False)
-
-     if tokens_a is None or tokens_b is None: # end of file
-         self.f_pos.seek(0, 0) # reset file pointer
-         return
-
-     # SOP, sentence-order prediction
-     instance = (is_next, tokens_a, tokens_b) if is_next \
-         else (is_next, tokens_b, tokens_a)
-  ```
+   ```python
+   is_next = rand() < 0.5 # whether token_b is next to token_a or not
+   
+   tokens_a = self.read_tokens(self.f_pos, len_tokens, True)
+   seek_random_offset(self.f_neg)
+   #f_next = self.f_pos if is_next else self.f_neg
+   f_next = self.f_pos # `f_next` should be next point
+   tokens_b = self.read_tokens(f_next, len_tokens, False)
+   
+   if tokens_a is None or tokens_b is None: # end of file
+   self.f_pos.seek(0, 0) # reset file pointer
+   return
+   
+   # SOP, sentence-order prediction
+   instance = (is_next, tokens_a, tokens_b) if is_next \
+   else (is_next, tokens_b, tokens_a)
+   ```
 
 2. [**Cross-Layer Parameter Sharing**](https://github.com/graykode/ALBERT-Pytorch/blob/master/models.py#L155) : ALBERT use cross-layer parameter sharing in Attention and FFN(FeedForward Network) to reduce number of parameter.
+  
    ```python
    class Transformer(nn.Module):
        """ Transformer with Self-Attentive Blocks"""
@@ -126,10 +128,8 @@ $ tensorboard --logdir log --bind_all # expose port
    
            self.pos_embed = nn.Embedding(cfg.max_len, cfg.hidden) # position embedding
            self.seg_embed = nn.Embedding(cfg.n_segments, cfg.hidden) # segment(token type) embedding
-   ```
 
 4. [**n-gram MLM**](https://github.com/graykode/ALBERT-Pytorch/blob/master/utils.py#L107) : MLM targets using n-gram masking (Joshi et al., 2019). Same as Paper, I use 3-gram. Code Reference from [XLNET implementation](https://github.com/zihangdai/xlnet/blob/master/data_utils.py#L331).
-  
    <p align="center"><img width="200" src="img/n-gram.png" /></p>
 
 #### Cannot Implemente now
