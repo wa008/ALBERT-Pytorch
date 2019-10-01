@@ -18,8 +18,7 @@ import models
 import optim
 import train
 
-from utils import set_seeds, get_device, get_random_word, truncate_tokens_pair, \
-    _is_start_piece, _sample_mask
+from utils import set_seeds, get_device, truncate_tokens_pair, _sample_mask
 
 # Input file format :
 # 1. One sentence per line. These should ideally be actual sentences,
@@ -113,11 +112,12 @@ class Pipeline():
 
 class Preprocess4Pretrain(Pipeline):
     """ Pre-processing steps for pretraining transformer """
-    def __init__(self, max_pred, vocab_words, indexer, max_len,
+    def __init__(self, max_pred, mask_prob, vocab_words, indexer, max_len,
                  mask_alpha, mask_beta, max_gram):
         super().__init__()
         self.max_len = max_len
         self.max_pred = max_pred # max tokens of prediction
+        self.mask_prob = mask_prob # masking probability
         self.vocab_words = vocab_words # vocabulary (sub)words
 
         self.indexer = indexer # function from token to token index
@@ -137,9 +137,13 @@ class Preprocess4Pretrain(Pipeline):
         segment_ids = [0]*(len(tokens_a)+2) + [1]*(len(tokens_b)+1)
         input_mask = [1]*len(tokens)
 
+        # the number of prediction is sometimes less than max_pred when sequence is short
+        n_pred = min(self.max_pred, max(1, int(round(len(tokens) * self.mask_prob))))
+
         # For masked Language Models
         masked_tokens, masked_pos, tokens = _sample_mask(tokens, self.mask_alpha,
-                                            self.mask_beta, self.max_gram, self.max_pred)
+                                            self.mask_beta, self.max_gram,
+                                            goal_num_predict=n_pred)
 
         masked_weights = [1]*len(masked_tokens)
 
@@ -213,6 +217,7 @@ def main(args):
     tokenize = lambda x: tokenizer.tokenize(tokenizer.convert_to_unicode(x))
 
     pipeline = [Preprocess4Pretrain(args.max_pred,
+                                    args.mask_prob,
                                     list(tokenizer.vocab.keys()),
                                     tokenizer.convert_tokens_to_ids,
                                     model_cfg.max_len,
@@ -262,11 +267,12 @@ if __name__ == '__main__':
 
     # official google-reacher/bert is use 20, but 20/512(=seq_len)*100 make only 3% Mask
     # So, official XLNET zihangdai/xlnet use 85 with name of num_predict(SAME HERE!)
-    parser.add_argument('--max_pred', type=int, default=85)
+    parser.add_argument('--max_pred', type=int, default=76, help='max tokens of prediction')
+    parser.add_argument('--mask_prob', type=float, default=0.15, help='masking probability')
 
     # try to n-gram masking SpanBERT(Joshi et al., 2019)
     parser.add_argument('--mask_alpha', type=int,
-                        default=6, help="How many tokens to form a group.")
+                        default=4, help="How many tokens to form a group.")
     parser.add_argument('--mask_beta', type=int,
                         default=1, help="How many tokens to mask within each group.")
     parser.add_argument('--max_gram', type=int,

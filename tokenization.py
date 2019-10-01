@@ -1,6 +1,8 @@
-# Copyright 2018 The Google AI Language Team Authors and The HugginFace Inc. team.
-
-""" Tokenization classes (It's exactly the same code as Google BERT code """
+"""
+    Copyright 2019 Tae Hwan Jung
+    ALBERT Implementation with forking
+    Clean Pytorch Code from https://github.com/dhlee347/pytorchic-bert
+"""
 
 from __future__ import absolute_import
 from __future__ import division

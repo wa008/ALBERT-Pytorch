@@ -1,4 +1,8 @@
-# Copyright 2018 Dong-Hyun Lee, Kakao Brain.
+"""
+    Copyright 2019 Tae Hwan Jung
+    ALBERT Implementation with forking
+    Clean Pytorch Code from https://github.com/dhlee347/pytorchic-bert
+"""
 
 """ Utils Functions """
 
@@ -114,12 +118,16 @@ def _sample_mask(seg, mask_alpha, mask_beta,
     pvals /= pvals.sum(keepdims=True) # p(n) = 1/n / sigma(1/k)
 
     cur_len = 0
+
     while cur_len < seg_len:
         if goal_num_predict is not None and num_predict >= goal_num_predict: break
 
         n = np.random.choice(ngrams, p=pvals)
         if goal_num_predict is not None:
             n = min(n, goal_num_predict - num_predict)
+
+        # `mask_alpha` : number of tokens forming group
+        # `mask_beta` : number of tokens to be masked in each groups.
         ctx_size = (n * mask_alpha) // mask_beta
         l_ctx = np.random.choice(ctx_size)
         r_ctx = ctx_size - l_ctx
@@ -164,5 +172,4 @@ def _sample_mask(seg, mask_alpha, mask_beta,
             tokens.append('[MASK]')
         else:
             tokens.append(seg[i])
-
     return masked_tokens, masked_pos, tokens

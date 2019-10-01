@@ -1,4 +1,8 @@
-# Copyright 2018 Dong-Hyun Lee, Kakao Brain.
+"""
+    Copyright 2019 Tae Hwan Jung
+    ALBERT Implementation with forking
+    Clean Pytorch Code from https://github.com/dhlee347/pytorchic-bert
+"""
 
 """ Training Config & Helper Classes  """
 

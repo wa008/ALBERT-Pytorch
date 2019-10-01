@@ -1,5 +1,8 @@
-# Copyright 2018 The Google AI Language Team Authors and The HugginFace Inc. team,
-# and Dong-Hyun Lee, Kakao Brain.
+"""
+    Copyright 2019 Tae Hwan Jung
+    ALBERT Implementation with forking
+    Clean Pytorch Code from https://github.com/dhlee347/pytorchic-bert
+"""
 
 """ a slightly modified version of Hugging Face's BERTAdam class """
 

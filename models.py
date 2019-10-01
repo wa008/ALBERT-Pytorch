@@ -1,7 +1,8 @@
-# Copyright 2019 Tae Hwan Jung(@graykode)
-# forked from https://github.com/dhlee347/pytorchic-bert
-# (Strongly inspired by original Google BERT code and Hugging Face's code)
-# Remove All Dropout
+"""
+    Copyright 2019 Tae Hwan Jung
+    ALBERT Implementation with forking
+    Clean Pytorch Code from https://github.com/dhlee347/pytorchic-bert
+"""
 
 """ Transformer Model Classes & Config Class """
 
