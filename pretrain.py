@@ -143,7 +143,7 @@ class Preprocess4Pretrain(Pipeline):
         # For masked Language Models
         masked_tokens, masked_pos, tokens = _sample_mask(tokens, self.mask_alpha,
                                             self.mask_beta, self.max_gram,
-                                            goal_num_predict=n_pred)
+                                            goal_num_predict=n_pred, vocab_words=self.vocab_words)
 
         masked_weights = [1]*len(masked_tokens)
 
