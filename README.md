@@ -28,14 +28,14 @@ With [WikiText 2](https://s3.amazonaws.com/research.metamind.io/wikitext/wikitex
 
 ```shell
 $ CUDA_LAUNCH_BLOCKING=1 python pretrain.py \
-			--data_file './data/wiki.train.tokens' \
-			--vocab './data/vocab.txt' \
-			--train_cfg './config/pretrain.json' \
-			--model_cfg './config/albert_unittest.json' \
-			--max_pred 75 --mask_prob 0.15 \
-			--mask_alpha 4 --mask_beta 1 --max_gram 3 \
-			--save_dir './saved' \
-			--log_dir './logs'
+            --data_file './data/wiki.train.tokens' \
+            --vocab './data/vocab.txt' \
+            --train_cfg './config/pretrain.json' \
+            --model_cfg './config/albert_unittest.json' \
+            --max_pred 75 --mask_prob 0.15 \
+            --mask_alpha 4 --mask_beta 1 --max_gram 3 \
+            --save_dir './saved' \
+            --log_dir './logs'
 			
 cuda (1 GPUs)
 Iter (loss=19.162): : 526it [02:25,  3.58it/s]
@@ -53,7 +53,8 @@ Iter (loss=9.547): : 527it [02:25,  3.66it/s]
 **TensorboardX** : `loss_lm` + `loss_sop`.
 ```shell
 # to use TensorboardX
-$ pip install tensorflow tensorboardX
+$ pip install -U protobuf tensorflow
+$ pip install tensorboardX
 $ tensorboard --logdir logs # expose http://server-ip:6006/
 ```
 ![](img/tensorboardX.png)
